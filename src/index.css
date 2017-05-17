@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+}
+
+table
+{ 
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid yellow;
+  border-radius: 10px;
+}
+
+th {
+  padding: 10px;
+  color: white;
+  background-color: gray;
+  text-align: center; 
+  min-width: 130px;
+}
+
+tr {
+  background-color: silver;
+  border-bottom: 1px solid gray;
+  height: 50px;
+}
+
+td {
+  text-align: center; 
+  min-width: 130px;
+}
+
+tr:last-of-type {
+  border-bottom: 0px;
+}
+
+h2 {
+  text-align: center;
+}
+
+button {
+  height: 30px;
+}
+
+.BankContainer {
+  padding-bottom: 30px;
+  border: 2px solid silver;
+}
+
+.rowdata {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.actions {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.ActionButtons {
+  padding-top: 20px;
+  text-align:center;
+}
+
+.ActionButtons button {
+  width: 129px;
+}
+
+form {
+  padding-top: 20px;
+  text-align:center;
+}
+
+form select {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 10px;
+}
+
+.mockData {
+  text-align: center;
+}
+
+.mockData button {
+  width: 30%;
+}
