@@ -14,9 +14,10 @@ class BankAccounts extends React.Component {
     super(props);
 
     this.state = {
-      data: []
+      accounts: []
     }
 
+    this.toggleItem = this.toggleItem.bind(this);
     this.createAccount = this.createAccount.bind(this);
     this.depositAccount = this.depositAccount.bind(this);
     this.withdrawAccount = this.withdrawAccount.bind(this);
@@ -25,23 +26,23 @@ class BankAccounts extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
     axios.get('/v1/accounts')
         .then( res => {
-          console.log(res.status);
-          const mockedData = res.data;
-          this.setState({ data: mockedData.data });
+          console.log(res.data)
+          this.setState({accounts: res.data });
         })
         .catch(err => {
+          console.log("got error", err)
           // error handling here
         })
   }
 
   render() {
+    const {accounts} = this.state
     return (
       <div className="BankContainer">
         <h2>Welcome to your Virtual Bank</h2>
-        <SingleSelectionAccountList data={this.state.data} />
+        <SingleSelectionAccountList accounts={accounts} onItemClick={this.toggleItem} />
         <ActionButtons
           depositAccount={this.depositAccount}
           withdrawAccount={this.withdrawAccount}
@@ -54,31 +55,56 @@ class BankAccounts extends React.Component {
     );
   }
 
-  test() {
-    axios.get('/v1/accounts')
-      .then( res => {
-        console.log(res.status);
-        const mockedData = res.data;
-        console.log(mockedData);
-        this.setState({ data: mockedData.data });
-      })
-      .catch(err => {
-          // error handling here
-      })
-  }
+
+    toggleItem(iban) {
+        console.log(`Selected [${iban}]`);
+        const toggle = (data, item) => {
+            return data.map((v, i) => {
+                let selected = false;
+                if (v.iban === item) {
+                    selected = true;
+                }
+                return Object.assign({}, v, {
+                    isSelected: selected
+                })
+            })
+        }
+        this.setState({ accounts: toggle(this.state.accounts, iban) });   
+
+        //------------ WITH MUTATION -------------
+        // const foundItem = _.find(this.props.data, data => data.iban === iban);
+
+        // foundItem.isSelected = !foundItem.isSelected;
+        // this.setState({ selections: this.props.data });      
+
+        // console.log(this.props.data[0].isSelected);
+        // console.log(this.props.data[1].isSelected);
+        // console.log(this.props.data[2].isSelected);
+    }
+
 
   createAccount(newIban, currency) {
-    this.state.data.push({
-      iban: newIban,
-      currency: currency,
-      amount: 0,
-      isSelected: false
-    });
-    this.setState({ data: this.state.data });
+    axios.post('/v1/accounts', {
+          iban: newIban,
+          currency: currency,
+          amount: 0
+        })
+      .then( res => {
+        let {accounts} = this.state
+        console.log("Before: ", accounts)
+        accounts.push(res.data)
+        console.log("After: ", accounts)
+        this.setState({accounts: accounts});
+      })
+      .catch(err => {
+        console.log("got error", err)
+        // error handling here
+      })
+
   }
 
   deleteAccount() {
-    const foundItem = _.find(this.state.data, data => data.isSelected === true);
+    const foundItem = _.find(this.state.accounts, account => account.isSelected === true);
     if (foundItem) {
       _.remove(this.state.data, data => data.isSelected === true);
       console.log(`Deleted [${foundItem.iban}]`);

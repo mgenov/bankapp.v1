@@ -29,9 +29,7 @@ if (process.env.NODE_ENV === 'development') {
         ];
     
     
-    mock.onGet('/v1/accounts').reply(200, {
-        data: accounts
-    });
+    mock.onGet('/v1/accounts').reply(200, accounts.slice());
 
     // CRUD - create, retrieve, update, delete
     // GET /v1/accounts -> Get resource accounts
@@ -42,9 +40,10 @@ if (process.env.NODE_ENV === 'development') {
     
 
     mock.onPost('/v1/accounts').reply(function(config) {
-        console.log(config);
-
-        return [201, {}];
+      let o = JSON.parse(config.data)
+      let newAccount = Object.assign({}, o, {id: accounts.length + 1})
+      accounts.push(newAccount)
+      return [201, newAccount];
     });
 
 }
